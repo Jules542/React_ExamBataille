@@ -1,16 +1,6 @@
 import './Bataille.css'
 import { useState, useEffect } from "react"
-
-type Carte = {
-    valeur: number
-    couleur: string
-}
-
-type Joueur = {
-    name: string
-    score: number
-    liste_cartes: Carte[]
-}
+import {Carte, Joueur} from "../Types"
 
 
 const Bataille = () => {
@@ -51,7 +41,7 @@ const Bataille = () => {
             case 14:
                 return "As";
             default:
-                return valeur.toString(); // Si ce n'est pas une figure, affichez le nombre
+                return valeur.toString()
         }
     };
 
@@ -72,7 +62,6 @@ const Bataille = () => {
 
     //Fonction pour créer les 2 joueurs et leur donner chacun la moitie du paquet aléatoire
     const createPlayers = () => {
-        console.log(randomPaquet)
         let mainJoueur:Carte[] = []
         for (let i = 0; i < 26; i++)
         {
@@ -94,8 +83,6 @@ const Bataille = () => {
 
         const carteJoueur = joueur.liste_cartes[index]
         const carteBot = bot.liste_cartes[0]
-        console.log(carteJoueur)
-        console.log(carteBot)
 
         setDerniereCarteJoueeJoueur(carteJoueur)
         setDerniereCarteJoueeBot(carteBot)
@@ -115,7 +102,6 @@ const Bataille = () => {
 
     const choixCarteBrulee = (index: number) => {
         const carteBrulee = joueur?.liste_cartes[index]
-        console.log(carteBrulee)
 
         setCartesSelectionnees([...cartesSelectionnees, index]);
         setIndexBrulee(index)
@@ -123,14 +109,12 @@ const Bataille = () => {
 
     const choixCarteEgalite = (index: number) => {
         const carteEgalite = joueur?.liste_cartes[index]
-        console.log(carteEgalite)
 
         setCartesSelectionnees([...cartesSelectionnees, index]);
         setIndexCarteEgalite(index)
 
         if (carteEgalite && bot && carteEgalite.valeur < bot?.liste_cartes[2].valeur)
         {
-            console.log("Résultat égalité = perte")
             setResultatManche("Perdu")
 
             const nouvelleListeCartesBot = [...bot.liste_cartes]
@@ -142,8 +126,6 @@ const Bataille = () => {
             indicesASupprimer.sort((a, b) => b - a);
             indicesASupprimer.forEach(i => nouvelleListeCartesJoueur.splice(i, 1));        
             
-            console.log(cartesPerduesJoueur)
-
             nouvelleListeCartesBot.push(...cartesPerduesJoueur)            
 
             if (bot)
@@ -157,7 +139,6 @@ const Bataille = () => {
         }
         else if (carteEgalite && bot && carteEgalite.valeur > bot?.liste_cartes[2].valeur)
         {
-            console.log("Résultat égalité = victoire")
             setResultatManche("Gagné")
 
             const nouvelleListeCartesBot = [...bot.liste_cartes]
@@ -177,7 +158,6 @@ const Bataille = () => {
             }
         }
         else {
-            console.log("égalité")
             setResultatManche("Egalité")
         }
     }
