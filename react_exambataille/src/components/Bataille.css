@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 1px solid blue;
     width: 100%;
     height: 100%;
 }
@@ -15,13 +14,55 @@
 .bataille-top button {
     height: 8rex;
     width: 15rem;
-    cursor: pointer;
     font-size: 20px;
 }
 
+button {
+    height: 4rex;
+    width: 10rem;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+li {
+    font-weight: 900;
+}
+
 .bataille-game-content {
-    border: 1px solid red;
     width: 100%;
+}
+
+.joueurs-informations {
+    border: 1px solid red;
     display: flex;
     justify-content: space-between;
+}
+
+.bot-carte, .joueur-carte {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    width: 18rem;
+    height: 8rex;
+}
+
+.bot-infos {
+    color: red;
+}
+
+.player-infos {
+    color: green;
+}
+
+.cartes-selectionnees {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.resultat-manche {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
