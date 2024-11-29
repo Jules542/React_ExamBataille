@@ -1,3 +1,7 @@
+body {
+  background-color: aliceblue;
+}
+
 .content {
   margin: auto;
   border : 2px solid black;
