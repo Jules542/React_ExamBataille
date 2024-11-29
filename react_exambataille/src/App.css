@@ -5,6 +5,7 @@ body {
 .content {
   margin: auto;
   border : 2px solid black;
+  background-color:bisque;
   width: 70rem;
   height: 105rex;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

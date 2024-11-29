@@ -27,10 +27,12 @@ const Bataille = () => {
     const [derniereCarteJoueeJoueur, setDerniereCarteJoueeJoueur] = useState<Carte | null>(null);
     const [derniereCarteJoueeBot, setDerniereCarteJoueeBot] = useState<Carte | null>(null);
 
-
     //Si il y a une égalité
     const [indexBrulee, setIndexBrulee] = useState<number>()
     const [indexCarteEgalite, setIndexCarteEgalite] = useState<number>()
+    //Pour disable les boutons des cartes déjà utilisées
+    const [cartesSelectionnees, setCartesSelectionnees] = useState<number[]>([]);
+
 
     useEffect(() => {
         if (randomPaquet.length > 0) {
@@ -38,18 +40,20 @@ const Bataille = () => {
         }   
     }, [randomPaquet])
 
-    useEffect(() => {
-        console.log(derniereCarteJoueeJoueur)
-    }, [derniereCarteJoueeJoueur])
-    
-    useEffect(() => {
-        console.log(joueur?.liste_cartes)
-    }, [joueur?.liste_cartes])
-
-    useEffect(() => {
-        console.log(bot?.liste_cartes)
-    }, [bot?.liste_cartes])
-
+    const getNomCarte = (valeur: number): string => {
+        switch (valeur) {
+            case 11:
+                return "Valet";
+            case 12:
+                return "Dame";
+            case 13:
+                return "Roi";
+            case 14:
+                return "As";
+            default:
+                return valeur.toString(); // Si ce n'est pas une figure, affichez le nombre
+        }
+    };
 
     //Fonction créant un paquet de cartes puis les melangeant aleatoirement
     const createRandomSuite = () => {
@@ -112,12 +116,16 @@ const Bataille = () => {
     const choixCarteBrulee = (index: number) => {
         const carteBrulee = joueur?.liste_cartes[index]
         console.log(carteBrulee)
+
+        setCartesSelectionnees([...cartesSelectionnees, index]);
         setIndexBrulee(index)
     }
 
     const choixCarteEgalite = (index: number) => {
         const carteEgalite = joueur?.liste_cartes[index]
         console.log(carteEgalite)
+
+        setCartesSelectionnees([...cartesSelectionnees, index]);
         setIndexCarteEgalite(index)
 
         if (carteEgalite && bot && carteEgalite.valeur < bot?.liste_cartes[2].valeur)
@@ -128,7 +136,12 @@ const Bataille = () => {
             const nouvelleListeCartesBot = [...bot.liste_cartes]
             const nouvelleListeCartesJoueur = [...joueur.liste_cartes]
 
-            const cartesPerduesJoueur = nouvelleListeCartesJoueur.splice(0, 3)
+            const indicesASupprimer = [choixJoueur, indexBrulee, index].filter(i => i !== undefined) as number[];
+
+            const cartesPerduesJoueur = indicesASupprimer.map(i => nouvelleListeCartesJoueur[i]);
+            indicesASupprimer.sort((a, b) => b - a);
+            indicesASupprimer.forEach(i => nouvelleListeCartesJoueur.splice(i, 1));        
+            
             console.log(cartesPerduesJoueur)
 
             nouvelleListeCartesBot.push(...cartesPerduesJoueur)            
@@ -199,7 +212,10 @@ const Bataille = () => {
     const mancheSuivante = () => {
         //Reset le choix fait et le résultat de la manche précédente
         setChoixJoueur(undefined)
+        setIndexBrulee(undefined)
+        setIndexCarteEgalite(undefined)
         setResultatManche("")
+        setCartesSelectionnees([])
 
         if (joueur?.liste_cartes.length === 0 || bot?.liste_cartes.length === 0) {
             alert('Le jeu est terminé !')
@@ -228,8 +244,9 @@ const Bataille = () => {
                         <ul>
                             {joueur?.liste_cartes.slice(0,5).map((card, index) => (
                                 <div key={index} className='joueur-carte'>
-                                    <li>{card.valeur} {card.couleur}</li>
+                                    <li>{getNomCarte(card.valeur)} {card.couleur}</li>
                                     <button 
+                                    disabled={cartesSelectionnees.includes(index) || (resultatManche !== "" && resultatManche !== "Egalité")}// Désactiver si déjà sélectionné
                                     onClick={() => {
                                         if (resultatManche === "Egalité" && indexBrulee !== undefined) {
                                         choixCarteEgalite(index); 
@@ -253,21 +270,21 @@ const Bataille = () => {
                     <div className='resultat-cartes-selectionnees'>
                         <div className="cartes-selectionnees">
                             <div className='joueur-choix'>
-                                <h3>Vous avez choisi : {derniereCarteJoueeJoueur.valeur} {derniereCarteJoueeJoueur.couleur} </h3>
+                                <h3>Vous avez choisi : {getNomCarte(derniereCarteJoueeJoueur.valeur)} {derniereCarteJoueeJoueur.couleur} </h3>
                                 {indexBrulee !== undefined && (                                
-                                    <h4>Vous avez brûlé {joueur?.liste_cartes[indexBrulee].valeur} {joueur?.liste_cartes[indexBrulee].couleur}</h4>
+                                    <h4>Vous avez brûlé {getNomCarte(joueur?.liste_cartes[indexBrulee].valeur)} {joueur?.liste_cartes[indexBrulee].couleur}</h4>
                                 )}
                                 {indexCarteEgalite !== undefined && (                                
-                                    <h4>Vous avez rejoué {joueur?.liste_cartes[indexCarteEgalite].valeur} {joueur?.liste_cartes[indexCarteEgalite].couleur}</h4>
+                                    <h4>Vous avez rejoué {getNomCarte(joueur?.liste_cartes[indexCarteEgalite].valeur)} {joueur?.liste_cartes[indexCarteEgalite].couleur}</h4>
                                 )}                            
                             </div>
                             <div className='bot-choix'>
-                                <h3>L'ordinateur a choisi : {derniereCarteJoueeBot.valeur} {derniereCarteJoueeBot.couleur}</h3>
+                                <h3>L'ordinateur a choisi : {getNomCarte(derniereCarteJoueeBot.valeur)} {derniereCarteJoueeBot.couleur}</h3>
                                 {indexBrulee !== undefined && (                                
-                                    <h4>L'ordinateur a brûlé {bot?.liste_cartes[1].valeur} {bot?.liste_cartes[1].couleur}</h4>
+                                    <h4>L'ordinateur a brûlé {getNomCarte(bot?.liste_cartes[1].valeur)} {bot?.liste_cartes[1].couleur}</h4>
                                 )}
                                 {indexCarteEgalite !== undefined && (                                
-                                    <h4>L'ordinateur a rejoué {bot?.liste_cartes[2].valeur} {bot?.liste_cartes[2].couleur}</h4>
+                                    <h4>L'ordinateur a rejoué {getNomCarte(bot?.liste_cartes[2].valeur)} {bot?.liste_cartes[2].couleur}</h4>
                                 )}   
                             </div>
                         </div>

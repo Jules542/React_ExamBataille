@@ -7,7 +7,7 @@
 }
 
 .bataille-top h1 {
-    color: blue;
+    color: whitesmoke;
     text-align: center;
 }
 
@@ -24,6 +24,10 @@ button {
     font-size: 15px;
 }
 
+button:hover {
+    background-color: rgb(39, 193, 88);
+}
+
 li {
     font-weight: 900;
 }
@@ -36,6 +40,8 @@ li {
     border: 1px solid red;
     display: flex;
     justify-content: space-between;
+    width: 90%;
+    margin: auto;
 }
 
 .bot-carte, .joueur-carte {
@@ -48,11 +54,11 @@ li {
 }
 
 .bot-infos {
-    color: red;
+    color: rgb(231, 67, 67);
 }
 
 .player-infos {
-    color: green;
+    color: rgb(39, 193, 88);
 }
 
 .cartes-selectionnees {
@@ -65,4 +71,10 @@ li {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+li {
+    font-weight: 600;
+    font-size: 21px;
+    width: 18rem;
 }
